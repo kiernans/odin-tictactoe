@@ -1,0 +1,22 @@
+body,
+html {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 200px);
+    grid-template-rows: repeat(3, 200px);
+}
+
+.square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    width: 200px;
+    font-size: 100px;
+    border: 2px solid black;
+}
