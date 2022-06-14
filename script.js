@@ -19,14 +19,36 @@ const GameBoard = (() => {
         }
     };
 
-    const checkWinner = () => {
-        //if(getBoard()[0] === getBoard()[])
+    const checkWinner = (playerChoice) => {
+        
+        //HORIZONTAL
+        if (getBoard()[0] === playerChoice && getBoard()[1] === playerChoice && getBoard()[2] === playerChoice) return playerChoice;
+    
+        else if (getBoard()[3] === playerChoice && getBoard()[4] === playerChoice && getBoard()[5] === playerChoice) return playerChoice;
+    
+        else if (getBoard()[6] === playerChoice && getBoard()[7] === playerChoice && getBoard()[8] === playerChoice) return playerChoice;
+    
+        //VERTICAL
+        else if (getBoard()[0] === playerChoice && getBoard()[3] === playerChoice && getBoard()[6] === playerChoice) return playerChoice;
+    
+        else if (getBoard()[1] === playerChoice && getBoard()[4] === playerChoice && getBoard()[7] === playerChoice) return playerChoice;
+    
+        else if (getBoard()[2] === playerChoice && getBoard()[5] === playerChoice && getBoard()[8] === playerChoice) return playerChoice;
+    
+        //DIAGONAL
+        else if (getBoard()[0] === playerChoice && getBoard()[4] === playerChoice && getBoard()[8] === playerChoice) return playerChoice;
+    
+        else if (getBoard()[2] === playerChoice && getBoard()[4] === playerChoice && getBoard()[6] === playerChoice) return playerChoice;
+
+        else return false;
+        
     };
 
     return {
          buildBoard,
          getBoard,
          setBoard,
+         checkWinner,
     };
 })();
 
@@ -67,9 +89,17 @@ const Game = (() => {
                 if(square.textContent === '') {
                     square.textContent = choosePlayerTurn(e);
                     ++turn;
+                    if(turn > 4) {
+                        if(GameBoard.checkWinner(_player1.getPlayerChoice())) console.log(`Winner is ${_player1.getPlayerChoice()}`);
+                        if(GameBoard.checkWinner(_player2.getPlayerChoice())) console.log(`Winner is ${_player2.getPlayerChoice()}`); 
+                    }
                 }
             });
         });
+    };
+
+    const displayWinner = (winner) => {
+        
     };
 
 
