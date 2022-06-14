@@ -9,17 +9,6 @@ const GameBoard = (() => {
         }
     };
 
-    const setChoice = () => {
-        const squares = document.querySelectorAll('.square');
-        squares.forEach((square) => {
-            square.addEventListener('click', () => {
-                const index = square.classList.value[7];
-                square.textContent = setBoard(index, Game.player1.getPlayerChoice());
-            });
-        });
-
-    };
-
     const buildBoard = () => {
         for (let i = 0; i < getBoard().length; i++) {
             const container = document.querySelector('.container');
@@ -29,11 +18,15 @@ const GameBoard = (() => {
             container.appendChild(square);
         }
     };
+
+    const checkWinner = () => {
+        //if(getBoard()[0] === getBoard()[])
+    };
+
     return {
          buildBoard,
          getBoard,
          setBoard,
-         setChoice,
     };
 })();
 
@@ -47,32 +40,44 @@ const Player = (playerChoice) => {
 };
 
 const Game = (() => {
-    const player1 = Player("X");
-    const player2 = Player("O");
+    const _player1 = Player("X");
+    const _player2 = Player("O");
     let turn = 0;
 
-    const start = () => {
+    const setup = () => {
         GameBoard.buildBoard();
-        GameBoard.setChoice();
+        setChoice();
+
     };
 
-    const choosePlayerTurn = () => {
+    const choosePlayerTurn = (event) => {
         if(turn % 2) {
-            console.log(`Player 2's turn!`);
-            turn++;
+            const index = event.target.classList.value[7];
+            return GameBoard.setBoard(index, _player2.getPlayerChoice());
         } else {
-            console.log(`Player 1's turn!`);
-            turn++;
+            const index = event.target.classList.value[7];
+            return GameBoard.setBoard(index, _player1.getPlayerChoice());
         }
     };
 
+    const setChoice = () => {
+        const squares = document.querySelectorAll('.square');
+        squares.forEach((square) => {
+            square.addEventListener('click', (e) => {
+                if(square.textContent === '') {
+                    square.textContent = choosePlayerTurn(e);
+                    ++turn;
+                }
+            });
+        });
+    };
+
+
     return {
-        start,
-        player1,
-        player2,
+        setup,
         choosePlayerTurn,
     };
     
 })();
 
-window.onload = Game.start();
+window.onload = Game.setup();
