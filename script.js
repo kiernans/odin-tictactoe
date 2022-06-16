@@ -147,11 +147,11 @@ const Game = (() => {
         const squares = document.querySelectorAll('.square');
         squares.forEach((square) => {
             square.addEventListener('click', (e) => {
-                if(square.textContent === '' && !(checkIfWinnerExists())) {
+                if(square.textContent === '' && !winner) {
                     square.textContent = choosePlayerTurn(e);
                     ++turn;
 
-                    if(turn > 4 && !winner) checkIfWinnerExists();
+                    if(turn > 4) checkIfWinnerExists();
                     
                     if(turn >= 9 && !winner) {
                         DOMStuff.displayTie();
