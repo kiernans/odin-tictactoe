@@ -9,6 +9,10 @@ const GameBoard = (() => {
         }
     };
 
+    const resetBoard = () => {
+        return _board = _board.map(x => '');
+    };
+
     const buildBoard = () => {
         for (let i = 0; i < getBoard().length; i++) {
             const container = document.querySelector('.container');
@@ -49,6 +53,7 @@ const GameBoard = (() => {
          getBoard,
          setBoard,
          checkWinner,
+         resetBoard,
     };
 })();
 
@@ -90,8 +95,8 @@ const Game = (() => {
                     square.textContent = choosePlayerTurn(e);
                     ++turn;
                     if(turn > 4) {
-                        if(GameBoard.checkWinner(_player1.getPlayerChoice())) console.log(`Winner is ${_player1.getPlayerChoice()}`);
-                        if(GameBoard.checkWinner(_player2.getPlayerChoice())) console.log(`Winner is ${_player2.getPlayerChoice()}`); 
+                        if(GameBoard.checkWinner(_player1.getPlayerChoice())) displayWinner(_player1.getPlayerChoice());
+                        if(GameBoard.checkWinner(_player2.getPlayerChoice())) displayWinner(_player2.getPlayerChoice()); 
                     }
                 }
             });
@@ -99,7 +104,7 @@ const Game = (() => {
     };
 
     const displayWinner = (winner) => {
-        
+        alert(`${winner} has won!`);
     };
 
 
