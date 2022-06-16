@@ -1,3 +1,48 @@
+const DOMStuff = (() => {
+    const buildBoard = () => {
+        for (let i = 0; i < GameBoard.getBoard().length; i++) {
+            const container = document.querySelector('.container');
+            const square = document.createElement('div');
+            square.classList.add('square');
+            square.classList.add(`${i}`);
+            container.appendChild(square);
+        }
+    };
+
+    const removeAllChildNodes = (parent) => {
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    };
+
+    const resetDOM = () => {
+        const container = document.querySelector('.container');
+        removeAllChildNodes(container);
+    };
+
+    const displayWinner = (winner) => {
+        const message = document.createElement('h1');
+        message.textContent = `${winner} is the winner!`;
+        document.body.appendChild(message);
+    };
+
+    const displayTie = () => {
+        const message = document.createElement('h1');
+        message.textContent = `It's a tie!`;
+        document.body.appendChild(message);
+    };
+
+    const removeResult = () => document.body.removeChild(document.body.lastChild);
+
+    return {
+        buildBoard,
+        resetDOM,
+        displayWinner,
+        displayTie,
+        removeResult,
+    };
+})();
+
 const GameBoard = (() => {
     let _board = ["", "", "", "", "", "", "", "", ""];
     
@@ -13,17 +58,7 @@ const GameBoard = (() => {
         return _board = _board.map(x => '');
     };
 
-    const buildBoard = () => {
-        for (let i = 0; i < getBoard().length; i++) {
-            const container = document.querySelector('.container');
-            const square = document.createElement('div');
-            square.classList.add('square');
-            square.classList.add(`${i}`);
-            container.appendChild(square);
-        }
-    };
-
-    const checkWinner = (playerChoice) => {
+    const decideWinner = (playerChoice) => {
         
         //HORIZONTAL
         if (getBoard()[0] === playerChoice && getBoard()[1] === playerChoice && getBoard()[2] === playerChoice) return playerChoice;
@@ -49,10 +84,9 @@ const GameBoard = (() => {
     };
 
     return {
-         buildBoard,
          getBoard,
          setBoard,
-         checkWinner,
+         decideWinner,
          resetBoard,
     };
 })();
@@ -69,12 +103,34 @@ const Player = (playerChoice) => {
 const Game = (() => {
     const _player1 = Player("X");
     const _player2 = Player("O");
+    let winner = '';
     let turn = 0;
 
-    const setup = () => {
-        GameBoard.buildBoard();
+    const setupGame = () => {
+        DOMStuff.buildBoard();
         setChoice();
+        resetButton();
+    };
 
+    const resetGame = () => {
+        resetTurn();
+        resetWinner();
+        resetButton();
+        GameBoard.resetBoard();
+        DOMStuff.resetDOM();
+        setupGame();
+        DOMStuff.removeResult();
+    };
+
+    const resetTurn = () => turn = 0;
+
+    const resetWinner = () => winner = '';
+
+    const resetButton = () => {
+        const resetBtn = document.querySelector('button');
+        resetBtn.addEventListener('click', () => {
+            resetGame();
+        });
     };
 
     const choosePlayerTurn = (event) => {
@@ -91,28 +147,38 @@ const Game = (() => {
         const squares = document.querySelectorAll('.square');
         squares.forEach((square) => {
             square.addEventListener('click', (e) => {
-                if(square.textContent === '') {
+                if(square.textContent === '' && !(checkIfWinnerExists())) {
                     square.textContent = choosePlayerTurn(e);
                     ++turn;
-                    if(turn > 4) {
-                        if(GameBoard.checkWinner(_player1.getPlayerChoice())) displayWinner(_player1.getPlayerChoice());
-                        if(GameBoard.checkWinner(_player2.getPlayerChoice())) displayWinner(_player2.getPlayerChoice()); 
+
+                    if(turn > 4 && !winner) checkIfWinnerExists();
+                    
+                    if(turn >= 9 && !winner) {
+                        DOMStuff.displayTie();
                     }
                 }
             });
         });
     };
 
-    const displayWinner = (winner) => {
-        alert(`${winner} has won!`);
+
+    const checkIfWinnerExists = () => {
+        if(GameBoard.decideWinner(_player1.getPlayerChoice())) {
+            winner = _player1.getPlayerChoice()
+            DOMStuff.displayWinner(winner);
+        }
+        if(GameBoard.decideWinner(_player2.getPlayerChoice())) {
+            winner = _player2.getPlayerChoice();
+            DOMStuff.displayWinner(winner);
+        } 
     };
 
 
     return {
-        setup,
+        setupGame,
         choosePlayerTurn,
     };
     
 })();
 
-window.onload = Game.setup();
+window.onload = Game.setupGame();

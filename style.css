@@ -1,22 +1,50 @@
+:root {
+    --background-color: #4d4d4d;
+    --text-line-color: #f16a70;
+    --board-color:#8cdcda;
+}
+
 body,
 html {
     height: 100%;
+    background-color: var(--background-color);
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .container {
     display: grid;
     grid-template-columns: repeat(3, 200px);
     grid-template-rows: repeat(3, 200px);
+    box-shadow: 5px 8px 12px 10px;
+    margin: 30px;
 }
 
 .square {
+    background-color: var(--board-color);
+    color: var(--text-line-color);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 200px;
     width: 200px;
     font-size: 100px;
-    border: 2px solid black;
+    border: 2px solid var(--text-line-color);
+    box-shadow: inset 0px 0px 14px 5px;
+}
+
+h1 {
+    color: var(--text-line-color);
+    font-size: 55px;
+    margin: 15px;
+}
+
+button {
+    background-color: var(--background-color);
+    color: var(--text-line-color);
+    height: 35px;
+    width: 140px;
+    border: 1px solid var(--text-line-color);
+    border-radius: 10px;
 }
