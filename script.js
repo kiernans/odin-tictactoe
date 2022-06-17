@@ -23,16 +23,35 @@ const DOMStuff = (() => {
     const displayWinner = (winner) => {
         const message = document.createElement('h1');
         message.textContent = `${winner} is the winner!`;
+        message.classList.add('result');
         document.body.appendChild(message);
     };
 
     const displayTie = () => {
         const message = document.createElement('h1');
         message.textContent = `It's a tie!`;
+        message.classList.add('result');
         document.body.appendChild(message);
     };
 
-    const removeResult = () => document.body.removeChild(document.body.lastChild);
+    const removeResult = () => {
+        const result = document.querySelector('.result');
+        result.remove();
+    };
+
+    const getInput = (selector) => {
+        const player = document.querySelector(`#${selector}`);
+        const pv = player.value;
+        return pv;
+    };
+
+    const displayPlayers = (playerName, side) => {
+        const display = document.querySelector(`.${side}`);
+        const player = document.createElement('h1');
+        const playerInput = getInput(playerName);
+        player.textContent = playerInput;
+        display.appendChild(player);
+    };
 
     return {
         buildBoard,
@@ -40,6 +59,7 @@ const DOMStuff = (() => {
         displayWinner,
         displayTie,
         removeResult,
+        displayPlayers,
     };
 })();
 
@@ -91,12 +111,14 @@ const GameBoard = (() => {
     };
 })();
 
-const Player = (playerChoice) => {
+const Player = (playerChoice, name) => {
     
     const getPlayerChoice = () => playerChoice;
+    const getPlayerName = () => name;
 
     return {
         getPlayerChoice,
+        getPlayerName,
     };
 };
 
@@ -113,13 +135,13 @@ const Game = (() => {
     };
 
     const resetGame = () => {
-        resetTurn();
-        resetWinner();
-        resetButton();
+        if(document.querySelector('.result')) DOMStuff.removeResult();
         GameBoard.resetBoard();
         DOMStuff.resetDOM();
         setupGame();
-        DOMStuff.removeResult();
+        resetTurn();
+        resetWinner();
+        resetButton();
     };
 
     const resetTurn = () => turn = 0;
@@ -127,9 +149,16 @@ const Game = (() => {
     const resetWinner = () => winner = '';
 
     const resetButton = () => {
-        const resetBtn = document.querySelector('button');
+        const resetBtn = document.querySelector('.reset');
         resetBtn.addEventListener('click', () => {
             resetGame();
+        });
+    };
+
+    const submitButton = () => {
+        const submitBtn = document.querySelector('.submit');
+        submitBtn.addEventListener('click', () => {
+            DOMStuff.displayPlayers();
         });
     };
 
