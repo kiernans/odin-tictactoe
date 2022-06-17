@@ -1,11 +1,11 @@
 const DOMStuff = (() => {
     const buildBoard = () => {
         for (let i = 0; i < GameBoard.getBoard().length; i++) {
-            const container = document.querySelector('.container');
+            const board = document.querySelector('.board');
             const square = document.createElement('div');
             square.classList.add('square');
             square.classList.add(`${i}`);
-            container.appendChild(square);
+            board.appendChild(square);
         }
     };
 
@@ -15,9 +15,16 @@ const DOMStuff = (() => {
         }
     };
 
-    const resetDOM = () => {
-        const container = document.querySelector('.container');
-        removeAllChildNodes(container);
+    const resetBoard = () => {
+        const board = document.querySelector('.board');
+        removeAllChildNodes(board);
+    };
+
+    const resetPlayer = () => {
+        const left = document.querySelector('.left');
+        const right = document.querySelector('.right');
+        removeAllChildNodes(left);
+        removeAllChildNodes(right);
     };
 
     const displayWinner = (winner) => {
@@ -55,11 +62,13 @@ const DOMStuff = (() => {
 
     return {
         buildBoard,
-        resetDOM,
+        resetBoard,
         displayWinner,
         displayTie,
         removeResult,
         displayPlayers,
+        resetPlayer,
+        getInput,
     };
 })();
 
@@ -115,16 +124,18 @@ const Player = (playerChoice, name) => {
     
     const getPlayerChoice = () => playerChoice;
     const getPlayerName = () => name;
+    const setPlayerName = (newName) => name = newName;
 
     return {
         getPlayerChoice,
         getPlayerName,
+        setPlayerName,
     };
 };
 
 const Game = (() => {
-    const _player1 = Player("X");
-    const _player2 = Player("O");
+    const _player1 = Player("X", '');
+    const _player2 = Player("O", '');
     let winner = '';
     let turn = 0;
 
@@ -132,16 +143,17 @@ const Game = (() => {
         DOMStuff.buildBoard();
         setChoice();
         resetButton();
+        submitButton();
     };
 
     const resetGame = () => {
         if(document.querySelector('.result')) DOMStuff.removeResult();
         GameBoard.resetBoard();
-        DOMStuff.resetDOM();
+        DOMStuff.resetBoard();
+        DOMStuff.resetPlayer();
         setupGame();
         resetTurn();
         resetWinner();
-        resetButton();
     };
 
     const resetTurn = () => turn = 0;
@@ -156,10 +168,21 @@ const Game = (() => {
     };
 
     const submitButton = () => {
-        const submitBtn = document.querySelector('.submit');
-        submitBtn.addEventListener('click', () => {
-            DOMStuff.displayPlayers();
-        });
+        const submitBtns = document.querySelectorAll('.submit');
+        submitBtns.forEach((button) => {
+            button.addEventListener('click', (e) => {
+                if(e.target.id === 'submit1' && !document.querySelector('.left').hasChildNodes()) {
+                    DOMStuff.displayPlayers('player1', 'left');
+                    const newName = DOMStuff.getInput('player2');
+                    Player.setPlayerName(newName);
+                } 
+                if(e.target.id === 'submit2' && !document.querySelector('.right').hasChildNodes()) {
+                    DOMStuff.displayPlayers('player2', 'right');
+                    const newName = DOMStuff.getInput('player2');
+                    Player.setPlayerName(newName);
+                }
+            });
+        }); 
     };
 
     const choosePlayerTurn = (event) => {
