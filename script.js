@@ -134,8 +134,8 @@ const Player = (playerChoice, name) => {
 };
 
 const Game = (() => {
-    const _player1 = Player("X", '');
-    const _player2 = Player("O", '');
+    const _player1 = Player("X", 'Player1');
+    const _player2 = Player("O", 'Player2');
     let winner = '';
     let turn = 0;
 
@@ -154,11 +154,17 @@ const Game = (() => {
         setupGame();
         resetTurn();
         resetWinner();
+        resetPlayerNames();
     };
 
     const resetTurn = () => turn = 0;
 
     const resetWinner = () => winner = '';
+
+    const resetPlayerNames = () => {
+        _player1.setPlayerName = 'Player1';
+        _player2.setPlayerName = 'Player2';
+    };
 
     const resetButton = () => {
         const resetBtn = document.querySelector('.reset');
@@ -173,13 +179,13 @@ const Game = (() => {
             button.addEventListener('click', (e) => {
                 if(e.target.id === 'submit1' && !document.querySelector('.left').hasChildNodes()) {
                     DOMStuff.displayPlayers('player1', 'left');
-                    const newName = DOMStuff.getInput('player2');
-                    Player.setPlayerName(newName);
+                    const newName = DOMStuff.getInput('player1');
+                    _player1.setPlayerName(newName);
                 } 
                 if(e.target.id === 'submit2' && !document.querySelector('.right').hasChildNodes()) {
                     DOMStuff.displayPlayers('player2', 'right');
                     const newName = DOMStuff.getInput('player2');
-                    Player.setPlayerName(newName);
+                    _player2.setPlayerName(newName);
                 }
             });
         }); 
@@ -216,11 +222,11 @@ const Game = (() => {
 
     const checkIfWinnerExists = () => {
         if(GameBoard.decideWinner(_player1.getPlayerChoice())) {
-            winner = _player1.getPlayerChoice()
+            winner = _player1.getPlayerName()
             DOMStuff.displayWinner(winner);
         }
         if(GameBoard.decideWinner(_player2.getPlayerChoice())) {
-            winner = _player2.getPlayerChoice();
+            winner = _player2.getPlayerName();
             DOMStuff.displayWinner(winner);
         } 
     };
